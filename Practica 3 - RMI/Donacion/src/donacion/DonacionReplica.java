@@ -18,6 +18,7 @@ public class DonacionReplica extends UnicastRemoteObject implements I_Donacion, 
     private String nombreServidor;          // Nombre del servidor
     private String nombreServidorReplica;   // Nombre del servidor réplica
     private int numDonacionesServidor;   // Nombre del servidor réplica
+    private int numDonantesServidor;
     
     public DonacionReplica(String servidor, String replica) throws RemoteException{
         this.usuariosServidor = new HashMap();
@@ -25,6 +26,7 @@ public class DonacionReplica extends UnicastRemoteObject implements I_Donacion, 
         this.nombreServidor = servidor;
         this.nombreServidorReplica = replica;
         this.numDonacionesServidor = 0;
+        this.numDonantesServidor = 0;
     }
 
     // Devuelve el número de usuarios registrados en el servidor
@@ -33,6 +35,12 @@ public class DonacionReplica extends UnicastRemoteObject implements I_Donacion, 
         Usuario user = this.usuariosServidor.get(nombreUsuario);
         
         return user.comprobarPassword(password);
+    }
+
+    // Devuelve el número de donantes en el servidor
+    @Override
+    public int getNumDonantesServidor() {
+        return this.numDonantesServidor;
     }
 
     // Devuelve el número de usuarios registrados en el servidor
@@ -100,6 +108,9 @@ public class DonacionReplica extends UnicastRemoteObject implements I_Donacion, 
     public void hacerDonacion(String nombreUsuario, double dineroDonado) throws RemoteException{
         if(this.usuarioEstaRegistrado(nombreUsuario)){
             Usuario user = usuariosServidor.get(nombreUsuario);
+            if(user.getDineroDonado() == 0){
+                this.numDonantesServidor++;
+            }
             user.addDonacion(dineroDonado);
             this.addDineroDonacion(dineroDonado);
 
@@ -217,5 +228,28 @@ public class DonacionReplica extends UnicastRemoteObject implements I_Donacion, 
     @Override
     public ArrayList<String> getUsuariosServidor() throws RemoteException {
         return new ArrayList<String>(this.usuariosServidor.keySet());
+    }
+
+    @Override
+    public int getTotalDonantes(String string) throws RemoteException {
+        int totalDonantes = 0;
+        I_DonacionReplica servidorReplica = this.getServidorReplica("localhost", this.nombreServidorReplica);
+        
+        totalDonantes += this.getNumDonantesServidor();
+        totalDonantes += servidorReplica.getNumDonantesServidor();
+        
+        return totalDonantes;
+    }
+
+    @Override
+    public boolean cambiarPassword(String nombreUsuario, String passwordAntigua, String passwordNueva) throws RemoteException {
+        boolean cambio = false;
+        Usuario user = null;
+        if(!this.getServidorHost(nombreUsuario).equals("")){
+            user = this.usuariosServidor.get(nombreUsuario);
+            cambio = user.cambiarPassword(passwordAntigua, passwordNueva);
+        }
+        
+        return cambio;
     }
 }

@@ -15,4 +15,5 @@ public interface I_DonacionReplica extends Remote {
     void addUsuario(String nombreUsuario, String password) throws RemoteException;
     boolean comprobarPassword(String nombreUsuario, String password) throws RemoteException;
     ArrayList<String> getUsuariosServidor() throws RemoteException;
+    int getNumDonantesServidor() throws RemoteException;
 }

@@ -13,4 +13,6 @@ public interface I_Donacion extends Remote {
     int getNumDonacionesUsuario(String nombreUsuario) throws RemoteException;
     String getServidorHost(String nombreUsuario) throws RemoteException;
     String getNombreServidor() throws RemoteException;
+    int getTotalDonantes(String nombreUsuario) throws RemoteException;
+    boolean cambiarPassword(String nombreUsuario, String passwordAntigua, String passwordNueva) throws RemoteException;
 }

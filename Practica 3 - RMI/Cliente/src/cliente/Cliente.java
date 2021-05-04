@@ -27,7 +27,7 @@ public class Cliente {
             
             System.out.println("--- Bienvenido a la página de DSD sin Fronteras ---");
             boolean continuar = true, inicioSesion = false;
-            String opcionAnonimo, opcionUsuario, nombreUsuario = null, password, servidorUsuario;
+            String opcionAnonimo, opcionUsuario, nombreUsuario = null, password, passwordNueva, servidorUsuario;
             double cantidad = 0;
             
             do {
@@ -98,6 +98,7 @@ public class Cliente {
                             "\t- Consultar dinero donado por mi (M)\n"+
                             "\t- Consultar numero total de donantes (U)\n"+
                             "\t- Consultar total donado a la causa (T)\n"+
+                            "\t- Cambiar Password (P)\n"+
                             "\t- Cerrar Sesion (C)\n"+
                             "\t- Cerrar Programa (E)");
                     do {
@@ -108,6 +109,7 @@ public class Cliente {
                     switch(opcionUsuario){
                         case "D":
                             System.out.println("-- Donar a la causa --");
+                            System.out.println("Introduce la cantidad que quieres donar:");
                             do {
                                 try {
                                     cantidad = Double.parseDouble(teclado.nextLine());
@@ -134,7 +136,7 @@ public class Cliente {
                             
                         case "U":
                             System.out.println("-- Consultar numero total de donantes --");
-                            System.out.println("Un total de  personas han donado a la causa.");
+                            System.out.println("Un total de " + servidor.getTotalDonantes(nombreUsuario) + " personas han donado a la causa.");
                             break;
                             
                         case "T":
@@ -144,6 +146,26 @@ public class Cliente {
                             }
                             else{
                                 System.out.println("Un total de " + servidor.getTotalDinero(nombreUsuario) + "€ ha sido donado a la causa.");
+                            }
+                            break;
+                        
+                        case "P":
+                            System.out.println("-- Cambiar Password --");
+                            System.out.println("Introduce la password antigua:");
+                            do {
+                                password = teclado.nextLine();
+                            }while(password.isEmpty());
+                            
+                            System.out.println("Introduce la password nueva:");
+                            do {
+                                passwordNueva = teclado.nextLine();
+                            }while(passwordNueva.isEmpty());
+                            
+                            if(servidor.cambiarPassword(nombreUsuario, password, passwordNueva)){
+                                System.out.println("Password modificada con exito");
+                            }
+                            else {
+                                System.err.println("ERROR! Password incorrecta");
                             }
                             break;
                             

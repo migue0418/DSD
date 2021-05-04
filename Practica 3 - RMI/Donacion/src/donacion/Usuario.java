@@ -38,6 +38,16 @@ public class Usuario {
         return correcto;
     }
     
+    public boolean cambiarPassword(String passwordAntigua, String passwordNueva){
+        boolean correcto = false;
+        if(this.password.equals(passwordAntigua)){
+            correcto = true;
+            this.password = passwordNueva;
+        }
+        
+        return correcto;
+    }
+    
     void addDonacion(double cantidad){
         this.numDonaciones++;
         this.dineroDonado += cantidad;
